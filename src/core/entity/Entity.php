@@ -1,8 +1,10 @@
 <?php
+
 namespace Boutique\Core\Entity;
 
-class Entity{
-    
+abstract class Entity
+{
+
     public function __set($name, $value)
     {
         $reflectionClass = new \ReflectionClass($this);
@@ -24,5 +26,18 @@ class Entity{
             return $reflectionProperty->getValue($this);
         }
     }
-    
+
+    public function toArray(){
+        $reflectionClass = new \ReflectionClass($this);
+        $properties = $reflectionClass->getProperties();
+
+        $data = [];
+        foreach ($properties as $property) {
+            $property->setAccessible(true);
+            $data[$property->getName()] = $property->getValue($this);
+        }
+
+        return $data;
+    }
+
 }

@@ -8,6 +8,7 @@
       "Boutique\\App\\Controller\\": "src/app/controller/",
       "Boutique\\App\\Model\\": "src/app/model/",
       "Boutique\\App\\Entity\\": "src/app/entity/",
+      "Boutique\\Core\\": "src/core/",
       "Boutique\\Core\\Database\\": "src/core/database/",
       "Boutique\\Core\\Entity\\": "src/core/entity/",
       "Boutique\\Core\\Model\\": "src/core/model/",

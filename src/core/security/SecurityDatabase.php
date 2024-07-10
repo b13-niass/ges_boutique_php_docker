@@ -1,28 +1,32 @@
 <?php
+
 namespace Boutique\Core\Security;
 
-use Boutique\App\App;
+use Boutique\Core\Database\MysqlDatabase;
 
-class SecurityDatabase{
+class SecurityDatabase
+{
     private $database;
 
-    public function __construct(){
-        $this->database = App::getDatabase();
+    public function __construct(MysqlDatabase $database)
+    {
+        $this->database = $database;
     }
 
-    public function login(){
-
+    public function login()
+    {
     }
 
-    public function isLogged(): bool{
+    public function isLogged(): bool
+    {
         return false;
     }
 
-    public function getRoles(){
-
+    public function getRoles()
+    {
     }
 
-    public function getUserLogged(){
-
+    public function getUserLogged()
+    {
     }
 }
