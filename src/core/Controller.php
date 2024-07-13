@@ -9,14 +9,17 @@ use Boutique\Core\Impl\IValidator;
 
 class Controller
 {
-    protected ?ISession $session = null;
-    protected ?IValidator $validator = null;
-    protected ?IAuthorize $authorize = null;
-    protected ?IFile $file = null;
+//    protected ?ISession $session = null;
+//    protected ?IValidator $validator = null;
+//    protected ?IAuthorize $authorize = null;
+//    protected ?IFile $file = null;
     protected $layout = "layout_default";
 
 
-    public function __construct(IValidator $validator, ISession $session, IFile $file, IAuthorize $authorize)
+    public function __construct(protected IValidator $validator,
+                               protected ISession $session,
+                                protected IFile $file,
+                                protected IAuthorize $authorize)
     {
         $this->session = $session;
         $this->validator = $validator;

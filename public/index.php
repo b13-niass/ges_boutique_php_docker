@@ -3,6 +3,8 @@
 use Boutique\App\App;
 use Boutique\App\Model\DetteModel;
 use Boutique\Core\Routes;
+use Boutique\Core\Container;
+use Boutique\Core\Service\ServicesProvider;
 // use Boutique\App\Model\ClientModel;
 
 function dd($data)
@@ -35,6 +37,9 @@ require_once dirname(__DIR__) . "/config/config.php";
 // dd($detteModel->articles);
 // dd($detteModel->client->dettes);
 
+$container = new Container();
+$serviceProvider = new ServicesProvider();
+$serviceProvider->register($container);
 
 $router = new Routes();
 
@@ -65,7 +70,7 @@ foreach ($webRoutes->getPostRoutes() as $route => $target) {
     $router->addPostRoute($route, $target);
 }
 
-$router->dispatch($uri, $method);
+$router->dispatch($uri, $method,$container);
 
 // require_once "../router/router.php";
 

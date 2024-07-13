@@ -5,7 +5,11 @@ namespace Boutique\Core;
 use Boutique\App\App;
 use Boutique\App\Controller\Error\ErrorController;
 use Boutique\App\Controller\Error\HttpCode;
+use Boutique\Core\Impl\IAuthorize;
+use Boutique\Core\Impl\IFile;
 use Boutique\Core\Impl\IRoute;
+use Boutique\Core\Impl\ISession;
+use Boutique\Core\Impl\IValidator;
 
 class Routes implements IRoute
 {
@@ -32,7 +36,7 @@ class Routes implements IRoute
         return $this->postRoutes;
     }
 
-    public function dispatch($uri, $method)
+    public function dispatch($uri, $method,$container)
     {
         $routes = $method === 'POST' ? $this->postRoutes : $this->getRoutes;
         foreach ($routes as $route => $target) {
@@ -52,14 +56,18 @@ class Routes implements IRoute
 
                     try {
                         $reflectionClass = new \ReflectionClass($controllerName);
+//                        $container = new Container();
+//                        dd(IValidator::class);
 
+//                        dd($obj);
                         if ($reflectionClass->isInstantiable()) {
-                            $controller = $reflectionClass->newInstance(
-                                App::getValidator(),
-                                App::getSession(),
-                                App::getFileUploadSystem(),
-                                App::getAuthorize()
-                            );
+                            $controller = $container->get($controllerName);
+//                            $controller = $reflectionClass->newInstance(
+//                                App::getValidator(),
+//                                App::getSession(),
+//                                App::getFileUploadSystem(),
+//                                App::getAuthorize()
+//                            );
 
                             if ($reflectionClass->hasMethod($actionName)) {
                                 $reflectionMethod = $reflectionClass->getMethod($actionName);

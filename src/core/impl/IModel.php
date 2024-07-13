@@ -27,6 +27,4 @@ interface IModel
     public function belongsToMany($classPivot, $classTarget, $columns = []);
 
     public function transaction(callable $transactions);
-
-
 }
