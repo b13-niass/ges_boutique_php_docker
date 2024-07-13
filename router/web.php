@@ -22,11 +22,13 @@ $webRoutes = new Routes();
 
 // dd(BoutiquierController::class);
 
-$webRoutes->addGetRoute('/dettes', ["controller" => BoutiquierController::class, 'action' => 'index']);;
-$webRoutes->addGetRoute('/dettes/add', ["controller" => BoutiquierController::class, 'action' => 'addDetteIndex']);;
-$webRoutes->addGetRoute('/dettes/liste', ["controller" => BoutiquierController::class, 'action' => 'listeDetteIndex']);;
-$webRoutes->addGetRoute('/dettes/add/new', ["controller" => BoutiquierController::class, 'action' => 'addDette']);;
-$webRoutes->addGetRoute('/error404', ["controller" => ErrorController::class, "action" => "notFound"]);
+$webRoutes->addGetRoute('/dettes', ["controller" => BoutiquierController::class, 'action' => 'index']);
+$webRoutes->addGetRoute('/dettes/add', ["controller" => BoutiquierController::class, 'action' => 'addDetteIndex']);
+$webRoutes->addGetRoute('/dettes/liste', ["controller" => BoutiquierController::class, 'action' => 'listeDetteIndex']);
+$webRoutes->addGetRoute('/dettes/add/new', ["controller" => BoutiquierController::class, 'action' => 'addDette']);
+$webRoutes->addGetRoute('/dettes/paiement', ["controller" => BoutiquierController::class, 'action' => 'addDette']);
+$webRoutes->addGetRoute('/dettes/paiement/{id}', ["controller" => BoutiquierController::class, 'action' => 'paiementFormShow']);
+// $webRoutes->addGetRoute('/error404', ["controller" => ErrorController::class, "action" => "paiementFormShow"]);
 
 $webRoutes->addPostRoute('/dettes/client', ["controller" => BoutiquierController::class, 'action' => 'addClient']);
 $webRoutes->addPostRoute('/dettes/client/search', ["controller" => BoutiquierController::class, 'action' => 'searchClient']);

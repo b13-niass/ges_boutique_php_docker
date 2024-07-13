@@ -11,4 +11,10 @@ class PaiementModel extends Model
     {
         return $this->query("SELECT * FROM paiements p WHERE p.dette_id = :dette_id;", $this->getEntityName(), ['dette_id' => $dette]);
     }
+
+
+    public function dette(){
+        return $this->belongsTo('DetteEntity');
+    }
+
 }

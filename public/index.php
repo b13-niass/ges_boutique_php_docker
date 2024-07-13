@@ -1,6 +1,9 @@
 <?php
 
+use Boutique\App\App;
+use Boutique\App\Model\DetteModel;
 use Boutique\Core\Routes;
+// use Boutique\App\Model\ClientModel;
 
 function dd($data)
 {
@@ -21,9 +24,17 @@ function replaceMultipleSlashes($url)
 }
 
 require_once dirname(__DIR__) . "/vendor/autoload.php";
+require_once dirname(__DIR__) . "/config/config.php";
 
-$dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
-$dotenv->load();
+// $clientModel = App::getInstance()->getModel('Client');
+// $detteModel = App::getInstance()->getModel('Dette');
+// $clientModel->getEntity()->id = 1;
+// $detteModel->getEntity()->client_id = 1;
+// $detteModel->getEntity()->id = 1;
+
+// dd($detteModel->articles);
+// dd($detteModel->client->dettes);
+
 
 $router = new Routes();
 

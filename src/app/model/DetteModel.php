@@ -29,4 +29,77 @@ class DetteModel extends Model
         JOIN detaildettes dd ON dd.dette_id = dnsolder.id GROUP BY dnsolder.id) as lastone 
         LEFT JOIN paiements p ON p.dette_id = lastone.id GROUP BY lastone.id;", $this->getEntityName(), ['etat' => $etat]);
     }
+
+    public function client()
+    {
+        return $this->belongsTo('ClientEntity');
+    }
+
+    public function articles()
+    {
+        return $this->belongsToMany('DetailDetteEntity', 'ArticleEntity');
+    }
+
+    public function paiements()
+    {
+        return $this->hasMany('PaiementEntity');
+    }
+
+    public function utilisateur()
+    {
+        return $this->belongsTo('UtilisateurEntity');
+    }
+
+    public function montantOneDette($dette_id)
+    {
+        $montant_total = 0;
+        foreach ($this->articles as $detarticle) {
+            if ($detarticle->getEntity()->dette_id == $dette_id) {
+                $montant_total += $detarticle->entity->prix * $detarticle->entity->qte;
+            }
+        }
+        return $montant_total;
+    }
+    public function getAllDettes()
+    {
+        $result = array_map(function ($dette) {
+            $dette->total_dette = $this->montantOneDette($dette->id);
+            return $dette;
+        }, $this->all());
+
+        return array_values($result);
+    }
+
+    public function getDetteNonSolder()
+    {
+        $result = array_filter($this->getAllDettes, function ($dette) {
+            if ($dette->etat == 'NON SOLDER') {
+                return true;
+            }
+        });
+
+        return array_values($result);
+    }
+
+    public function getDetteSolder()
+    {
+        $result = array_filter($this->getAllDettes, function ($dette) {
+            if ($dette->etat == 'SOLDER') {
+                return true;
+            }
+        });
+
+        return array_values($result);
+    }
+
+    public function getPaiements($dette_id)
+    {
+        $paiements = [];
+        foreach ($this->paiements as $paiement) {
+            if ($paiement->getEntity()->dette_id == $dette_id) {
+                $paiements[] = $paiement->getEntity();
+            }
+        }
+        return $paiements;
+    }
 }

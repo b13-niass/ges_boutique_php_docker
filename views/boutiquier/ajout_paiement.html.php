@@ -65,9 +65,10 @@
                         <div class="pb-4">
                             <label for="nameVertical" class="inline-flex items-center w-[178px] mb-2 text-sm font-medium capitalize text-dark dark:text-title-dark">Montant à verser</label>
                             <div class="flex flex-col flex-1 md:flex-row">
-                                <input type="hidden" name="dette_id" value=" <?= $laDette->id ?>">
-                                <input name="montant" type="text" id="nameVertical" class=" rounded-4 border-normal border-1 text-[15px] dark:bg-box-dark-up dark:border-box-dark-up px-[20px] py-[12px] min-h-[50px] outline-none placeholder:text-[#A0A0A0] text-body dark:text-subtitle-dark w-full focus:ring-primary focus:border-primary" placeholder="Montant" required="" autocomplete="username">
+                                <input type="hidden" name="dette_id" value="<?= $laDette->id ?>">
+                                <input name="montant" type="text" id="nameVertical" class=" rounded-4 border-normal border-1 text-[15px] dark:bg-box-dark-up dark:border-box-dark-up px-[20px] py-[12px] min-h-[50px] outline-none placeholder:text-[#A0A0A0] text-body dark:text-subtitle-dark w-full focus:ring-primary focus:border-primary" placeholder="Montant" autocomplete="username">
                             </div>
+                            <span class="text-danger text-sm <?php isset($errorPaiement['montant']) && !empty($errorPaiement['montant']) ? 'visible' : 'invisible' ?>"><?= isset($errorPaiement['montant']) && !empty($errorPaiement['montant']) ? $errorPaiement['montant'] : '' ?></span>
                         </div>
                         <button class="bg-primary hover:bg-primary-hbr border-solid border-1 border-primary text-white dark:text-title-dark text-[14px] font-semibold leading-[22px] inline-flex items-center justify-center rounded-[4px] px-[20px] h-[50px] shadow-btn transition duration-300 ease-in-out w-full"> Verser </button>
                     </form>
@@ -77,3 +78,10 @@
     </div>
 
 </div>
+
+<?php
+
+use Boutique\Core\Session;
+
+Session::unset('errorPaiement');
+?>

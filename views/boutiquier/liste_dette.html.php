@@ -20,8 +20,9 @@
                                 <div class="flex flex-col flex-1 md:flex-row gap-3">
                                     <label for="name" class="w-[178px] inline-flex items-center mb-2 text-sm font-medium capitalize text-dark dark:text-title-dark">Etat Dette</label>
                                     <select name="etat" class="py-[11px] px-[20px] w-full capitalize text-body dark:text-white border-regular dark:border-box-dark-up border-1 rounded-6 dark:bg-box-dark-up outline-none">
-                                        <option value="SOLDER">SOLDER</option>
-                                        <option value="NON SOLDER" selected>NON SOLDER</option>
+                                        <?php foreach ($etat as $e) : ?>
+                                            <option <?= isset($selectedEtat) && !empty($selectedEtat) && $selectedEtat == $e ? 'selected' : '' ?> value="<?= $e ?>"><?= $e ?></option>
+                                        <?php endforeach; ?>
                                     </select>
                                     <button type="submit" class="px-[30px] h-[44px] text-white bg-primary border-primary hover:bg-primary-hbr font-medium rounded-4 text-sm w-full sm:w-auto text-center inline-flex items-center justify-center capitalize transition-all duration-300 ease-linear" data-te-ripple-init="" data-te-ripple-color="light">Filtrer</button>
                                 </div>
@@ -62,11 +63,13 @@
                                             <td class="px-4 py-2.5 font-normal last:text-end capitalize text-[14px] text-dark dark:text-title-dark border-none group-hover:bg-transparent  whitespace-nowrap">
                                                 <?= (int)$dette->total_dette - (int)$dette->montant_verse ?></td>
                                             <td class="px-4 py-2.5 font-normal last:text-end capitalize text-[14px] text-dark dark:text-title-dark border-none group-hover:bg-transparent  whitespace-nowrap">
-                                                <form action="/dettes/paiement" method="POST" class="<?= ((int)$dette->total_dette - (int)$dette->montant_verse) > 0 ? '' : 'hidden' ?>">
-                                                    <input type="hidden" name="dette_id" value="<?= $dette->id ?>">
-                                                    <button type="submit" class="px-[30px] h-[44px] text-white bg-primary border-primary hover:bg-primary-hbr font-medium rounded-4 text-sm w-full sm:w-auto text-center inline-flex items-center justify-center capitalize transition-all duration-300 ease-linear" data-te-ripple-init="" data-te-ripple-color="light">Payer</button>
-                                                </form>
-
+                                                <!-- <form action="/dettes/paiement" method="POST" class="<?= ((int)$dette->total_dette - (int)$dette->montant_verse) > 0 ? '' : 'hidden' ?>">
+                                                    <input type="hidden" name="dette_id" value="<?= $dette->id ?>"> -->
+                                                <!-- <button type="submit" class="px-[30px] h-[44px] text-white bg-primary border-primary hover:bg-primary-hbr font-medium rounded-4 text-sm w-full sm:w-auto text-center inline-flex items-center justify-center capitalize transition-all duration-300 ease-linear" data-te-ripple-init="" data-te-ripple-color="light">Payer</button> -->
+                                                <!-- </form> -->
+                                                <a href="/dettes/paiement/<?=$dette->id?>" class="<?= ((int)$dette->total_dette - (int)$dette->montant_verse) > 0 ? '' : 'hidden' ?> px-[30px] h-[44px] text-white bg-primary border-primary hover:bg-primary-hbr font-medium rounded-4 text-sm w-full sm:w-auto text-center inline-flex items-center justify-center capitalize transition-all duration-300 ease-linear">
+                                                    Payer
+                                                </a>
                                                 <span class="<?= ((int)$dette->total_dette - (int)$dette->montant_verse) == 0 ? '' : 'hidden' ?> bg-success rounded-[15px] py-[4px] px-[8.23px] text-[12px] font-medium leading-[13px] text-center text-white">Payer Complétement</span>
 
                                             </td>

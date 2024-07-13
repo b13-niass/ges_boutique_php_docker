@@ -6,6 +6,7 @@
       "Boutique\\": "src/",
       "Boutique\\App\\": "src/app/",
       "Boutique\\App\\Controller\\": "src/app/controller/",
+      "Boutique\\App\\Controller\\Error\\": "src/app/controller/errors/",
       "Boutique\\App\\Model\\": "src/app/model/",
       "Boutique\\App\\Entity\\": "src/app/entity/",
       "Boutique\\Core\\": "src/core/",

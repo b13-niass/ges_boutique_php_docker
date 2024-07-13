@@ -2,6 +2,9 @@
 
 namespace Boutique\Core;
 
+use Boutique\App\Controller\Error\ErrorController;
+use Boutique\App\Controller\Error\HttpCode;
+
 class Routes
 {
     private $getRoutes = [];
@@ -30,10 +33,10 @@ class Routes
     public function dispatch($uri, $method)
     {
         $routes = $method === 'POST' ? $this->postRoutes : $this->getRoutes;
-
         foreach ($routes as $route => $target) {
             $pattern = preg_replace('/\{[a-zA-Z]+\}/', '([a-zA-Z0-9_]+)', $route);
             if (preg_match("#^$pattern$#", $uri, $matches)) {
+                // dd($pattern);
                 array_shift($matches);
 
                 if (is_callable($target)) {
@@ -74,7 +77,9 @@ class Routes
             }
         }
 
-        header("Location: /error404");
+        // header("Location: /error404");
+        // dd(HttpCode::Code404->value);
+        ErrorController::loadView(HttpCode::Code404);
         exit();
     }
 }

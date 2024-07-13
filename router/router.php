@@ -8,6 +8,9 @@ Route::get('/dettes', ['index', BoutiquierController::class]);
 Route::get('/dettes/add', ['addDetteIndex', BoutiquierController::class]);
 Route::get('/dettes/liste', ['listeDetteIndex', BoutiquierController::class]);
 Route::get('/dettes/add/new', ['addDette', BoutiquierController::class]);
+// Route::get('/dettes/paiement/show', ['paiementFormShow', BoutiquierController::class]);
+Route::get('/dettes/ss/{dette_id}', ['paiementFormShow', BoutiquierController::class]);
+
 
 Route::post('/dettes/client', ['addClient', BoutiquierController::class]);
 Route::post('/dettes/client/search', ['searchClient', BoutiquierController::class]);

@@ -3,7 +3,10 @@
 namespace Boutique\App;
 
 use Boutique\Core\Database\MysqlDatabase;
+use Boutique\Core\Files;
 use Boutique\Core\Security\SecurityDatabase;
+use Boutique\Core\Session;
+use Boutique\Core\Validator;
 
 class App
 {
@@ -11,6 +14,9 @@ class App
     private static ?App $instance = null;
     private static ?MysqlDatabase $database = null;
     private static ?SecurityDatabase $securityDatabase = null;
+    protected ?Session $session = null;
+    protected ?Validator $validator = null;
+    protected ?Files $fileUploadSystem = null;
 
     public static function getInstance()
     {
@@ -36,6 +42,14 @@ class App
         return self::$securityDatabase;
     }
 
+    public static function getFileUploadSystem()
+    {
+        if (self::$fileUploadSystem == null) {
+            self::$fileUploadSystem = new Files();
+        }
+        return self::$fileUploadSystem;
+    }
+
     public function getModel(string $modelName)
     {
         $modelName .= 'Model';
@@ -48,6 +62,9 @@ class App
 
         $setDatabaseMethod = $reflectionClass->getMethod('setDatabase');
         $setDatabaseMethod->invoke($object, self::getDatabase());
+
+        $setTableMethod = $reflectionClass->getMethod('setEntity');
+        $setTableMethod->invoke($object);
 
         return $object;
     }

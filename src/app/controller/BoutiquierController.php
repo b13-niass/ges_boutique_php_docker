@@ -60,7 +60,7 @@ class BoutiquierController extends Controller
             // dd($data['validValues']);
         }
 
-        $this->renderView('index_dette', $data);
+        $this->renderView('/boutiquier/index_dette', $data);
     }
 
     public function addDetteIndex()
@@ -91,7 +91,7 @@ class BoutiquierController extends Controller
                 // dd($data['errorAdd']);
             }
 
-            $this->renderView('ajout_dette', $data);
+            $this->renderView('/boutiquier/ajout_dette', $data);
         } else {
             $this->redirect('/dettes');
         }
@@ -102,10 +102,13 @@ class BoutiquierController extends Controller
         $data['listesDettesDuClient'] = [];
         if ($this->session::issetE('found_client')) {
             $data['clientFound'] = $this->session::restoreObjectFromSession('Client', 'found_client');
-            $data['listesDettesDuClient'] = $this->detteModel->getOneClientDettes($data['clientFound']->id, 'NON SOLDER');
+            // dd($this->clientModel->getEntity());
+            $this->clientModel->getEntity()->id = (int) $data['clientFound']->id;
+            // dd($this->clientModel->getDettesNonSolder());
+            $data['listesDettesDuClient'] = $this->clientModel->getDettesNonSolder();
             // dd($data['listesDettesDuClient']);
             $data['etat'] = ['NON SOLDER', 'SOLDER'];
-            $this->renderView('liste_dette', $data);
+            $this->renderView('/boutiquier/liste_dette', $data);
         } else {
             $this->redirect('/dettes');
         }
@@ -116,10 +119,16 @@ class BoutiquierController extends Controller
         $data['listesDettesDuClient'] = [];
         if ($this->session::issetE('found_client')) {
             $data['clientFound'] = $this->session::restoreObjectFromSession('Client', 'found_client');
-            $data['listesDettesDuClient'] = $this->detteModel->getOneClientDettes($data['clientFound']->id, $_POST['etat']);
+            $this->clientModel->getEntity()->id = (int) $data['clientFound']->id;
+            // dd($_POST['etat']);
+            if (isset($_POST['etat']) &&  $_POST['etat'] == "NON SOLDER") {
+                $data['listesDettesDuClient'] = $this->clientModel->getDettesNonSolder();
+            } else {
+                $data['listesDettesDuClient'] = $this->clientModel->getDettesSolder();
+            }
             $data['selectedEtat'] =  $_POST['etat'];
             $data['etat'] = ['NON SOLDER', 'SOLDER'];
-            $this->renderView('liste_dette', $data);
+            $this->renderView('/boutiquier/liste_dette', $data);
         } else {
             $this->redirect('/dettes');
         }
@@ -128,23 +137,22 @@ class BoutiquierController extends Controller
     {
         $_POST['password'] = $this->hasherPassword("passer@1");
         $count_error = 0;
-        $fileName = $this->uploadFile('photo', $_ENV['UPLOAD_DIR'] . '/mes_images');
+        $fileName = $this->file->load('photo');
         if (!$fileName) {
             $this->session::setArray('errorForm', 'photo', 'Erreur lors de l\'upload de la photo');
         }
         $_POST['photo'] = $fileName;
 
-        $errorCount = Validator::validate($_POST, [
+        $errors = $this->validator->validate($_POST, [
             'nom' => ['required'],
             'prenom' => ['required'],
-            'email' => ['required', 'email', 'unique'],
-            'telephone' => ['required', 'phone', 'unique'],
+            'email' => ['required', 'email', 'uniqueclient'],
+            'telephone' => ['required', 'phone', 'uniqueclient'],
             'password' => ['required'],
             'photo' => ['required'],
         ]);
 
-        if ($errorCount > 0) {
-            $errors = Validator::getErrors();
+        if (count($errors) > 0) {
             $this->session::set('errorForm', $errors);
 
             $postkeys = array_keys($_POST);
@@ -201,20 +209,16 @@ class BoutiquierController extends Controller
 
     public function addDetteArticle()
     {
-        // dd($this->session::issetE('found_client'));
-        // dd($this->session::issetE('current_article'));
         if ($this->session::issetE('found_client')) {
             if ($this->session::issetE('current_article')) {
                 $client = $this->session::restoreObjectFromSession('Client', 'found_client');
                 $article = $this->session::restoreObjectFromSession('Article', 'current_article');
 
 
-                $errorCount = Validator::validate($_POST, [
+                $errors = $this->validator->validate($_POST, [
                     'quantite' => ['required', 'number']
                 ]);
-                // dd($errorCount);
-                if ($errorCount > 0) {
-                    $errors = Validator::getErrors();
+                if (count($errors) > 0) {
                     $this->session::set('errorAdd', $errors);
                 } else {
                     if ($article->qte >= (int) $_POST['quantite']) {
@@ -268,33 +272,93 @@ class BoutiquierController extends Controller
         $data['listesDettesDuClient'] = [];
         if ($this->session::issetE('found_client')) {
             $data['clientFound'] = $this->session::restoreObjectFromSession('Client', 'found_client');
-            $listesDettesDuClient = $this->detteModel->getOneClientDettes($data['clientFound']->id, 'NON SOLDER');
-            // dd($listesDettesDuClient);
             if (isset($_POST['dette_id']) && !empty($_POST['dette_id'])) {
-                $laDette = array_filter($listesDettesDuClient, function ($dette) {
-                    return $dette->id == (int)$_POST['dette_id'];
-                });
-                $laDette = array_values($laDette);
-                // dd($laDette);
-                $data['laDette'] =  $laDette[0];
+                $data['laDette'] = $this->detteModel->find(['id' => $_POST['dette_id']]);
+
+                $this->clientModel->getEntity()->id = $data['clientFound']->id;
+                $data['laDette']->total_dette = $this->clientModel->getMontantTotalDette($data['laDette']->id);
+                $data['laDette']->montant_verse = $this->clientModel->getMontantVerserDette($data['laDette']->id);
+
+                if ($this->session::issetE('errorPaiement')) {
+                    $data['errorPaiement'] = $this->session::get('errorPaiement');
+                    // dd($data['validValues']);
+                }
             }
-            $this->renderView('ajout_paiement', $data);
+            $this->renderView('/boutiquier/ajout_paiement', $data);
         }
     }
 
+    public function paiementFormShow($id)
+    {
+        $data = [];
+        $data['listesDettesDuClient'] = [];
+        if ($this->session::issetE('found_client')) {
+            $data['clientFound'] = $this->session::restoreObjectFromSession('Client', 'found_client');
+            if (isset($id) && !empty($id)) {
+                $data['laDette'] = $this->detteModel->find(['id' => $id]);
+
+                $this->clientModel->getEntity()->id = $data['clientFound']->id;
+                $data['laDette']->total_dette = $this->clientModel->getMontantTotalDette($data['laDette']->id);
+                $data['laDette']->montant_verse = $this->clientModel->getMontantVerserDette($data['laDette']->id);
+
+                if ($this->session::issetE('errorPaiement')) {
+                    $data['errorPaiement'] = $this->session::get('errorPaiement');
+                    // dd($data['validValues']);
+                }
+            }
+            $this->renderView('/boutiquier/ajout_paiement', $data);
+        }
+    }
+
+
     public function paiementAdd()
     {
+        // dd($_POST);
         if (isset($_POST['dette_id']) && isset($_POST['montant'])) {
+            $dette_id = (int) trim($_POST['dette_id']);
             if (!empty($_POST['dette_id']) && !empty($_POST['montant'])) {
+                $errors = $this->validator->validate($_POST, [
+                    'dette_id' =>  ["required"],
+                    'montant' => ["required", "number"]
+                ]);
+                if (count($errors)) {
+
+                    $this->session::set('errorPaiement', $errors);
+                    $this->redirect("/dettes/paiement/{$dette_id}");
+                    exit();
+                }
+                $dette = $this->detteModel->find(['id' => $dette_id]);
+                $this->clientModel->getEntity()->id = $dette->client_id;
+                $montant_total_dette = $this->clientModel->getMontantTotalDette($dette->id);
+                $montant_verser_dette = $this->clientModel->getMontantVerserDette($dette->id);
+                $montant_restant_dette = $montant_total_dette - $montant_verser_dette;
+
+                if ((int)$_POST['montant'] > $montant_restant_dette) {
+                    $this->session::set('errorPaiement', ['montant' => 'Le montant ne doit pas être supérieur au montant restant']);
+                    $this->redirect("/dettes/paiement/{$dette_id}");
+                    exit();
+                }
                 $result = $this->paiementModel->save([
-                    'dette_id' => (int)$_POST['dette_id'],
+                    'dette_id' => (int)$dette_id,
                     'montant' => (float)$_POST['montant'],
                     'date' => date('Y-m-d')
                 ]);
 
-                if ($result) {
-                    $this->redirect('/dettes/liste');
+                if (($montant_restant_dette - (float)$_POST['montant']) == 0) {
+                    $this->detteModel->setTable();
+                    $result = $this->detteModel::update([
+                        "etat" => "SOLDER",
+                        "id" => (int)$dette_id
+                    ]);
                 }
+
+                if ($result) {
+                    $this->redirect('/dettes/paiement');
+                }
+            } else {
+                $this->session::set('errorPaiement', ['montant' => 'Le champs montant est vide']);
+                $this->redirect("/dettes/paiement/{$dette_id}");
+                exit();
             }
         }
     }
@@ -305,19 +369,17 @@ class BoutiquierController extends Controller
         $data['listesDettesDuClient'] = [];
         if ($this->session::issetE('found_client')) {
             $data['clientFound'] = $this->session::restoreObjectFromSession('Client', 'found_client');
-            $listesDettesDuClient = $this->detteModel->getOneClientDettes($data['clientFound']->id, 'NON SOLDER');
             if (isset($_POST['dette_id']) && !empty($_POST['dette_id'])) {
-                $laDette = array_filter($listesDettesDuClient, function ($dette) {
-                    return $dette->id == (int)$_POST['dette_id'];
-                });
-                $laDette = array_values($laDette);
+                $data['laDette'] = $this->detteModel->find(['id' => $_POST['dette_id']]);
 
-                $data['laDette'] =  $laDette[0];
-
-                $data['listePaiement'] = $this->paiementModel->getDettePaiement((int) $_POST['dette_id']);
-                // dd($date['listePaiement']);
+                $this->clientModel->getEntity()->id = $data['clientFound']->id;
+                $data['laDette']->total_dette = $this->clientModel->getMontantTotalDette($data['laDette']->id);
+                $data['laDette']->montant_verse = $this->clientModel->getMontantVerserDette($data['laDette']->id);
+                $this->detteModel->getEntity()->id = $data['laDette']->id;
+                $data['listePaiement'] = $this->detteModel->getPaiements($data['laDette']->id);
+                // $data['listePaiement'] = $this->paiementModel->getDettePaiement((int) $_POST['dette_id']);
             }
-            $this->renderView('liste_paiement', $data);
+            $this->renderView('/boutiquier/liste_paiement', $data);
         }
     }
 
@@ -326,35 +388,35 @@ class BoutiquierController extends Controller
         return password_hash($password, PASSWORD_DEFAULT);
     }
 
-    function uploadFile($fileKey, $targetDir)
-    {
-        if (!isset($_FILES[$fileKey])) {
-            return false;
-        }
+    // function uploadFile($fileKey, $targetDir)
+    // {
+    //     if (!isset($_FILES[$fileKey])) {
+    //         return false;
+    //     }
 
-        $file = $_FILES[$fileKey];
-        if ($file['error'] !== UPLOAD_ERR_OK) {
-            return false;
-        }
+    //     $file = $_FILES[$fileKey];
+    //     if ($file['error'] !== UPLOAD_ERR_OK) {
+    //         return false;
+    //     }
 
-        $fileExtension = pathinfo($file['name'], PATHINFO_EXTENSION);
+    //     $fileExtension = pathinfo($file['name'], PATHINFO_EXTENSION);
 
-        $fileName = uniqid() . '.' . $fileExtension;
+    //     $fileName = uniqid() . '.' . $fileExtension;
 
-        $targetFilePath = rtrim($targetDir, '/') . '/' . $fileName;
+    //     $targetFilePath = rtrim($targetDir, '/') . '/' . $fileName;
 
-        if (!is_dir($targetDir)) {
-            if (!mkdir($targetDir, 0777, true)) {
-                return false;
-            }
-        }
+    //     if (!is_dir($targetDir)) {
+    //         if (!mkdir($targetDir, 0777, true)) {
+    //             return false;
+    //         }
+    //     }
 
-        if (!move_uploaded_file($file['tmp_name'], $targetFilePath)) {
-            return false;
-        }
+    //     if (!move_uploaded_file($file['tmp_name'], $targetFilePath)) {
+    //         return false;
+    //     }
 
-        return $fileName;
-    }
+    //     return $fileName;
+    // }
 
     // public function verifierPassword($passwordIn){
 

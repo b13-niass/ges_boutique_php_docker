@@ -27,17 +27,23 @@ abstract class Entity
         }
     }
 
-    public function toArray(){
-        $reflectionClass = new \ReflectionClass($this);
-        $properties = $reflectionClass->getProperties();
+    // public function toArray(){
+    //     $reflectionClass = new \ReflectionClass($this);
+    //     $properties = $reflectionClass->getProperties();
 
-        $data = [];
-        foreach ($properties as $property) {
-            $property->setAccessible(true);
-            $data[$property->getName()] = $property->getValue($this);
-        }
+    //     $data = [];
+    //     foreach ($properties as $property) {
+    //         $property->setAccessible(true);
+    //         $data[$property->getName()] = $property->getValue($this);
+    //     }
 
-        return $data;
+    //     return $data;
+    // }
+
+    public function __serialize()
+    {
     }
-
+    public function __unserialize($data)
+    {
+    }
 }

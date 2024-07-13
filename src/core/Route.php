@@ -1,4 +1,5 @@
 <?php
+
 namespace Boutique\Core;
 
 class Route
@@ -8,7 +9,6 @@ class Route
 
     public function __construct()
     {
-        
     }
 
     public static function get($uri, $action)
@@ -39,6 +39,7 @@ class Route
             $method = $action[0];
             if (class_exists($controllerClass) && method_exists($controllerClass, $method)) {
                 $controller = new $controllerClass();
+                dd($controller->$method());
                 $controller->$method();
             } else {
                 throw new \Exception("Controller or method not found.");
@@ -48,4 +49,3 @@ class Route
         }
     }
 }
-?>

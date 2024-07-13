@@ -12,6 +12,7 @@ class SecurityController extends Controller
 
     public function __construct()
     {
+        parent::__construct();
         $this->securityDatabase = App::getSecurityDatabase();
     }
 

@@ -21,7 +21,6 @@
                             <label for="prenom" class="inline-flex items-center w-[100px] mb-2 text-sm font-medium capitalize text-dark dark:text-title-dark">Prenom</label>
                             <div class="flex flex-col flex-1 md:flex-col">
                                 <input type="text" name="prenom" value="<?= isset($validValues['prenom']) && !empty($validValues['prenom']) ? $validValues['prenom'] : '' ?>" id="prenom" class="w-full rounded-4 border-normal border-1 text-[15px] dark:bg-box-dark-up dark:border-box-dark-up px-[20px] py-[12px] min-h-[50px] outline-none placeholder:text-[#A0A0A0] text-body dark:text-subtitle-dark  focus:ring-primary focus:border-primary" placeholder="Prenom" autocomplete="username">
-                                <span class="text-danger text-sm <?php isset($errorForm['prenom']) && !empty($errorForm['prenom']) ? 'visible' : 'invisible' ?>"><?= isset($errorForm['prenom']) && !empty($errorForm['prenom']) ? $errorForm['prenom'] : '' ?></span>
 
                             </div>
                         </div>

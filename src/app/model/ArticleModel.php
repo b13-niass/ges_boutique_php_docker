@@ -10,4 +10,9 @@ class ArticleModel extends Model
     {
         return $this->query("SELECT qte FROM {$this->table} WHERE id = :id", $this->getEntityName(), ['id' => $id], true);
     }
+
+    public function dettes()
+    {
+        $this->belongsToMany('DetailDetteEntity', 'DetteEntity');
+    }
 }

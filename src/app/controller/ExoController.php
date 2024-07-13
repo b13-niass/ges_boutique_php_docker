@@ -7,6 +7,9 @@ use Boutique\Core\Controller;
 
 class ExoController extends Controller
 {
+    public function __construct(){
+        parent::__construct();
+    }
     public function store()
     {
         echo "bonjour";

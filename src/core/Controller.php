@@ -5,12 +5,17 @@ namespace Boutique\Core;
 class Controller
 {
     protected ?Session $session = null;
+    protected ?Validator $validator = null;
+    protected $authorize = null;
+    protected ?Files $file = null;
     protected $layout = "layout_default";
 
 
     public function __construct()
     {
         $this->session = new Session();
+        $this->validator = new Validator();
+        $this->file = new Files();
     }
 
     public function renderView($view, $data = [])
@@ -20,7 +25,7 @@ class Controller
         }
 
         ob_start();
-        require_once $_ENV['VIEW_DIR'] . "/{$view}.html.php";
+        require_once $_ENV['VIEW_DIR'] . "{$view}.html.php";
         $content = ob_get_clean();
 
         require_once $_ENV['VIEW_DIR'] . "/layouts/{$this->layout}.html.php";
