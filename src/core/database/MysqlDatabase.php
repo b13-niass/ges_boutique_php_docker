@@ -2,9 +2,10 @@
 
 namespace Boutique\Core\Database;
 
+use Boutique\Core\Impl\IDatabase;
 use \PDO;
 
-final class MysqlDatabase
+final class MysqlDatabase implements IDatabase
 {
     private $pdo;
     // private static $instance;

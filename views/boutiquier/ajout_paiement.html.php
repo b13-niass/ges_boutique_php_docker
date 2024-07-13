@@ -81,7 +81,7 @@
 
 <?php
 
-use Boutique\Core\Session;
+//use Boutique\Core\Session;
 
-\Boutique\App\App::getSession()->unset('errorPaiement');
+//\Boutique\App\App::getSession()->unset('errorPaiement');
 ?>

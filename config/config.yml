@@ -1,0 +1,29 @@
+# config/services.yaml
+services:
+  Boutique\Core\Impl\IDatabase:
+    class: Boutique\Core\Database\MysqlDatabase
+    arguments:
+      DB_HOST: localhost
+      DB_NAME: maboutique2
+      DB_USER: root
+      DB_PASS: passer@12345
+
+  securitydatabase:
+    class: Boutique\Core\Security\SecurityDatabase
+
+  Boutique\Core\Impl\ISession:
+    class: Boutique\Core\Session
+
+  Boutique\Core\Impl\IValidator:
+    class: Boutique\Core\Validator
+
+  Boutique\Core\Impl\IFile:
+    class: Boutique\Core\Files
+
+  Boutique\Core\Impl\IAuthorize:
+    class: Boutique\Core\Authorize
+parameters:
+  DB_HOST: localhost
+  DB_NAME: maboutique2
+  DB_USER: root
+  DB_PASS: passer@12345

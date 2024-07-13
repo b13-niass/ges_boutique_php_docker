@@ -5,11 +5,7 @@ namespace Boutique\Core;
 use Boutique\App\App;
 use Boutique\App\Controller\Error\ErrorController;
 use Boutique\App\Controller\Error\HttpCode;
-use Boutique\Core\Impl\IAuthorize;
-use Boutique\Core\Impl\IFile;
 use Boutique\Core\Impl\IRoute;
-use Boutique\Core\Impl\ISession;
-use Boutique\Core\Impl\IValidator;
 
 class Routes implements IRoute
 {
@@ -36,13 +32,12 @@ class Routes implements IRoute
         return $this->postRoutes;
     }
 
-    public function dispatch($uri, $method,$container)
+    public function dispatch($uri, $method)
     {
         $routes = $method === 'POST' ? $this->postRoutes : $this->getRoutes;
         foreach ($routes as $route => $target) {
             $pattern = preg_replace('/\{[a-zA-Z]+\}/', '([a-zA-Z0-9_]+)', $route);
             if (preg_match("#^$pattern$#", $uri, $matches)) {
-                // dd($pattern);
                 array_shift($matches);
 
                 if (is_callable($target)) {
@@ -52,16 +47,11 @@ class Routes implements IRoute
                 if (is_array($target) && isset($target['controller']) && isset($target['action'])) {
                     $controllerName = $target['controller'];
                     $actionName = $target['action'];
-                    // $controllerClass = "Boutique\\App\\Controller\\{$controllerName}";
-
                     try {
                         $reflectionClass = new \ReflectionClass($controllerName);
-//                        $container = new Container();
-//                        dd(IValidator::class);
 
-//                        dd($obj);
                         if ($reflectionClass->isInstantiable()) {
-                            $controller = $container->get($controllerName);
+                            $controller = App::getInstance()->getContainer()->get($controllerName);
 //                            $controller = $reflectionClass->newInstance(
 //                                App::getValidator(),
 //                                App::getSession(),
@@ -92,8 +82,6 @@ class Routes implements IRoute
             }
         }
 
-        // header("Location: /error404");
-        // dd(HttpCode::Code404->value);
         ErrorController::loadView(HttpCode::Code404);
         exit();
     }

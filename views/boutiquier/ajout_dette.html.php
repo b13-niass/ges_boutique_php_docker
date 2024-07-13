@@ -130,8 +130,7 @@
 
 //use Boutique\Core\Session;
 
-\Boutique\App\App::getSession()->unset('errorSearchRef');
-\Boutique\App\App::getSession()->unset('errorAdd');
-// Session::unset('panier');
-// Session::unset('current_article');
+//\Boutique\App\App::getSession()->unset('errorSearchRef');
+//\Boutique\App\App::getSession()->unset('errorAdd');
+
 ?>

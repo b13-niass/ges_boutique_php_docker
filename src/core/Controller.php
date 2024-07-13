@@ -9,17 +9,16 @@ use Boutique\Core\Impl\IValidator;
 
 class Controller
 {
-//    protected ?ISession $session = null;
-//    protected ?IValidator $validator = null;
-//    protected ?IAuthorize $authorize = null;
-//    protected ?IFile $file = null;
+    protected ?ISession $session = null;
+    protected ?IValidator $validator = null;
+    protected ?IAuthorize $authorize = null;
+    protected ?IFile $file = null;
     protected $layout = "layout_default";
 
 
-    public function __construct(protected IValidator $validator,
-                               protected ISession $session,
-                                protected IFile $file,
-                                protected IAuthorize $authorize)
+    public function __construct(IValidator $validator, ISession $session,
+                                IFile $file,
+                                IAuthorize $authorize)
     {
         $this->session = $session;
         $this->validator = $validator;
@@ -32,11 +31,12 @@ class Controller
         if (count($data)) {
             extract($data);
         }
-
+        $session = $this->session;
+//        ob_clean();
+//        dd($session);
         ob_start();
         require_once $_ENV['VIEW_DIR'] . "{$view}.html.php";
         $content = ob_get_clean();
-
         require_once $_ENV['VIEW_DIR'] . "/layouts/{$this->layout}.html.php";
     }
 

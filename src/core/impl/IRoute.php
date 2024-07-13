@@ -12,5 +12,5 @@ interface IRoute
 
     public function getPostRoutes();
 
-    public function dispatch($uri, $method,$container);
+    public function dispatch($uri, $method);
 }

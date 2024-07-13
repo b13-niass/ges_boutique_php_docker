@@ -91,13 +91,10 @@
                     </div>
                 </div>
                 <?php
-
-//                use Boutique\Core\Session;
-
-                \Boutique\App\App::getSession()->unset('success');
-                \Boutique\App\App::getSession()->unset('error');
-                \Boutique\App\App::getSession()->unset('errorForm');
-                \Boutique\App\App::getSession()->unset('validValues');
+//                $session->unset('success');
+//                $session->unset('error');
+//                $session->unset('errorForm');
+//                $session->unset('validValues');
                 ?>
             </div>
         </div>
