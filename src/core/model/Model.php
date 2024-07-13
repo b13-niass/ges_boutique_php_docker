@@ -123,6 +123,7 @@ abstract class Model
         if (count($params) == 0) {
             $result = $this->database->query($sql, $className, $single);
         } else {
+            // dd($sql);
             $result =  $this->database->prepare($sql, $params, $className, $single);
         }
         return $result;

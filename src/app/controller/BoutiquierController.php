@@ -353,7 +353,7 @@ class BoutiquierController extends Controller
                 }
 
                 if ($result) {
-                    $this->redirect('/dettes/paiement');
+                    $this->redirect('/dettes/liste');
                 }
             } else {
                 $this->session::set('errorPaiement', ['montant' => 'Le champs montant est vide']);
@@ -387,38 +387,4 @@ class BoutiquierController extends Controller
     {
         return password_hash($password, PASSWORD_DEFAULT);
     }
-
-    // function uploadFile($fileKey, $targetDir)
-    // {
-    //     if (!isset($_FILES[$fileKey])) {
-    //         return false;
-    //     }
-
-    //     $file = $_FILES[$fileKey];
-    //     if ($file['error'] !== UPLOAD_ERR_OK) {
-    //         return false;
-    //     }
-
-    //     $fileExtension = pathinfo($file['name'], PATHINFO_EXTENSION);
-
-    //     $fileName = uniqid() . '.' . $fileExtension;
-
-    //     $targetFilePath = rtrim($targetDir, '/') . '/' . $fileName;
-
-    //     if (!is_dir($targetDir)) {
-    //         if (!mkdir($targetDir, 0777, true)) {
-    //             return false;
-    //         }
-    //     }
-
-    //     if (!move_uploaded_file($file['tmp_name'], $targetFilePath)) {
-    //         return false;
-    //     }
-
-    //     return $fileName;
-    // }
-
-    // public function verifierPassword($passwordIn){
-
-    // }
 }
