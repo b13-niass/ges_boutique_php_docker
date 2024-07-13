@@ -2,10 +2,12 @@
 
 namespace Boutique\Core;
 
+use Boutique\App\App;
 use Boutique\App\Controller\Error\ErrorController;
 use Boutique\App\Controller\Error\HttpCode;
+use Boutique\Core\Impl\IRoute;
 
-class Routes
+class Routes implements IRoute
 {
     private $getRoutes = [];
     private $postRoutes = [];
@@ -52,7 +54,12 @@ class Routes
                         $reflectionClass = new \ReflectionClass($controllerName);
 
                         if ($reflectionClass->isInstantiable()) {
-                            $controller = $reflectionClass->newInstance();
+                            $controller = $reflectionClass->newInstance(
+                                App::getValidator(),
+                                App::getSession(),
+                                App::getFileUploadSystem(),
+                                App::getAuthorize()
+                            );
 
                             if ($reflectionClass->hasMethod($actionName)) {
                                 $reflectionMethod = $reflectionClass->getMethod($actionName);

@@ -2,44 +2,46 @@
 
 namespace Boutique\Core;
 
-class Session
+use Boutique\Core\Impl\ISession;
+
+class Session implements ISession
 {
 
     public function __construct()
     {
-        self::start();
+        $this->start();
     }
 
-    public static function start()
+    public function start()
     {
         session_start();
     }
 
-    public static function close()
+    public function close()
     {
         session_destroy();
     }
-    public static function set($key, $value)
+    public function set($key, $value)
     {
         $_SESSION[$key] = $value;
     }
 
-    public static function setArray($keyPrime, $keySecond, $value)
+    public function setArray($keyPrime, $keySecond, $value)
     {
         $_SESSION[$keyPrime][$keySecond] = $value;
     }
 
-    public static function get($key)
+    public function get($key)
     {
-        return self::issetE($key) ? $_SESSION[$key] : null;
+        return $this->issetE($key) ? $_SESSION[$key] : null;
     }
 
-    public static function getJson($key)
+    public function getJson($key)
     {
-        return self::issetE($_SESSION[$key]) ? $_SESSION[$key] : null;
+        return $this->issetE($_SESSION[$key]) ? $_SESSION[$key] : null;
     }
 
-    public static function issetE($key)
+    public function issetE($key)
     {
         if (isset($_SESSION[$key])) {
             return true;
@@ -47,14 +49,14 @@ class Session
         return false;
     }
 
-    public static function all()
+    public function all()
     {
         return  $_SESSION;
     }
 
-    public static function unset($key)
+    public function unset($key)
     {
-        // if (self::issetE($_SESSION[$key])) {
+        // if ($this->>issetE($_SESSION[$key])) {
         unset($_SESSION[$key]);
         // return true;
         // }
@@ -62,7 +64,7 @@ class Session
     }
 
 
-    public static function saveObjectToSession($object, $sessionKey)
+    public function saveObjectToSession($object, $sessionKey)
     {
         $reflectionClass = new \ReflectionClass($object);
         $properties = $reflectionClass->getProperties();
@@ -73,12 +75,12 @@ class Session
             $sessionData[$property->getName()] = $property->getValue($object);
         }
 
-        self::set($sessionKey, $sessionData);
+        $this->set($sessionKey, $sessionData);
     }
 
-    public static function restoreObjectFromSession($classEntity, $sessionKey)
+    public function restoreObjectFromSession($classEntity, $sessionKey)
     {
-        if (!self::issetE($sessionKey)) {
+        if (!$this->issetE($sessionKey)) {
             return null;
         }
         $classEntity = "Boutique\\App\\Entity\\{$classEntity}Entity";
@@ -96,7 +98,7 @@ class Session
         return $object;
     }
 
-    public static function saveObjectToSessionArray($object, $sessionKey)
+    public function saveObjectToSessionArray($object, $sessionKey)
     {
         $reflectionClass = new \ReflectionClass($object);
         $properties = $reflectionClass->getProperties();
@@ -114,9 +116,9 @@ class Session
         $_SESSION[$sessionKey][] = $sessionData;
     }
 
-    public static function restoreObjectsFromSessionArray($classEntity, $sessionKey)
+    public function restoreObjectsFromSessionArray($classEntity, $sessionKey)
     {
-        if (!self::issetE($sessionKey)) {
+        if (!$this->issetE($sessionKey)) {
             return [];
         }
         $classEntity = "Boutique\\App\\Entity\\{$classEntity}Entity";

@@ -2,20 +2,26 @@
 
 namespace Boutique\Core;
 
+use Boutique\Core\Impl\IAuthorize;
+use Boutique\Core\Impl\IFile;
+use Boutique\Core\Impl\ISession;
+use Boutique\Core\Impl\IValidator;
+
 class Controller
 {
-    protected ?Session $session = null;
-    protected ?Validator $validator = null;
-    protected $authorize = null;
-    protected ?Files $file = null;
+    protected ?ISession $session = null;
+    protected ?IValidator $validator = null;
+    protected ?IAuthorize $authorize = null;
+    protected ?IFile $file = null;
     protected $layout = "layout_default";
 
 
-    public function __construct()
+    public function __construct(IValidator $validator, ISession $session, IFile $file, IAuthorize $authorize)
     {
-        $this->session = new Session();
-        $this->validator = new Validator();
-        $this->file = new Files();
+        $this->session = $session;
+        $this->validator = $validator;
+        $this->file = $file;
+        $this->authorize = $authorize;
     }
 
     public function renderView($view, $data = [])

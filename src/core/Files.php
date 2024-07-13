@@ -2,7 +2,9 @@
 
 namespace Boutique\Core;
 
-class Files
+use Boutique\Core\Impl\IFile;
+
+class Files implements IFile
 {
 
     private array $imagesTypes = ['jpg', 'png', 'gif', 'pdf'];
@@ -68,4 +70,21 @@ class Files
 
         return false;
     }
+
+//    public function __set($name, $value)
+//    {
+//        $this->$name = $value;
+//        return $this;
+//    }
+//
+//    public function __get($name)
+//    {
+//        return $this->$name;
+//    }
+
+    public function setDir($dir)
+    {
+        $this->dir = $dir;
+    }
+
 }

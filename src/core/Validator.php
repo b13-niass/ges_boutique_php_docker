@@ -3,8 +3,9 @@
 namespace Boutique\Core;
 
 use Boutique\App\App;
+use Boutique\Core\Impl\IValidator;
 
-class Validator
+class Validator implements IValidator
 {
     private array $errors = [];
 
@@ -13,8 +14,7 @@ class Validator
         'email' => 'isEmail',
         'phone' => 'isPhone',
         'number' => 'isNumeric',
-        'uniqueclient' => 'isUnique',
-        'smallerThanRestant' => 'isSmallerThanRestant'
+        'uniqueclient' => 'isUnique'
     ];
 
     public function validate($data, $rules)
@@ -83,7 +83,4 @@ class Validator
         return !$client->find(["{$field}" => $value]);
     }
 
-    public function isSmallerThanRestant($value, $field){
-        
-    }
 }

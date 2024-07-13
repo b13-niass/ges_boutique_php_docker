@@ -92,12 +92,12 @@
                 </div>
                 <?php
 
-                use Boutique\Core\Session;
+//                use Boutique\Core\Session;
 
-                Session::unset('success');
-                Session::unset('error');
-                Session::unset('errorForm');
-                Session::unset('validValues');
+                \Boutique\App\App::getSession()->unset('success');
+                \Boutique\App\App::getSession()->unset('error');
+                \Boutique\App\App::getSession()->unset('errorForm');
+                \Boutique\App\App::getSession()->unset('validValues');
                 ?>
             </div>
         </div>

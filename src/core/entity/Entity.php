@@ -2,7 +2,9 @@
 
 namespace Boutique\Core\Entity;
 
-abstract class Entity
+use Boutique\Core\Impl\IEntity;
+
+abstract class Entity implements IEntity
 {
 
     public function __set($name, $value)
@@ -43,7 +45,9 @@ abstract class Entity
     public function __serialize()
     {
     }
+
     public function __unserialize($data)
     {
     }
+
 }

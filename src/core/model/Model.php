@@ -5,9 +5,9 @@ namespace Boutique\Core\Model;
 use Boutique\App\App;
 use Boutique\Core\Database\MysqlDatabase;
 use Boutique\Core\Entity\Entity;
-use \PDO;
+use Boutique\Core\Impl\IModel;
 
-abstract class Model
+abstract class Model implements IModel
 {
 
     protected ?string $table = null;
@@ -105,7 +105,6 @@ abstract class Model
         return $this->query("SELECT * FROM {$this->table}", $this->getEntityName());
     }
 
-
     public function find(array $data)
     {
         $key = array_keys($data)[0];
@@ -183,7 +182,7 @@ abstract class Model
 
     //organiser dossier view par controller
 
-    public function hasMany($classMany)
+    public function hasMany($classMany, $tableMany=null,$foreignKeyInMany=null)
     {
         $entityNameOne = $this->getRootClassName($this->getEntityName());
         $rootNameMany = $this->getRootClassName("Boutique\\App\\Entity\\" . $classMany);
@@ -191,8 +190,12 @@ abstract class Model
         $modelNameMany = "Boutique\\App\\Model\\" . ucfirst($rootNameMany) . "Model";
         $foreignKey = $entityNameOne . "_id";
         $tableManyName = $rootNameMany . "s";
-        // dd($foreignKey);
-        $sql = "SELECT * FROM {$tableManyName} WHERE {$foreignKey} = :foreignKey";
+
+        if($tableMany !=null && $foreignKeyInMany != null && is_string($tableMany) && is_string($foreignKeyInMany)){
+            $sql = "SELECT * FROM {$tableMany} WHERE {$foreignKeyInMany} = :foreignKey";
+        }else{
+            $sql = "SELECT * FROM {$tableManyName} WHERE {$foreignKey} = :foreignKey";
+        }
 
         $arrayOfentity = $this->query($sql, $entityNameMany, ["foreignKey" => $this->entity->id], false);
 
@@ -207,7 +210,7 @@ abstract class Model
     }
 
 
-    public function belongsTo($classOne)
+    public function belongsTo($classOne, $tableOne=null,$idInOne=null)
     {
         $entityNameMany = $this->getRootClassName($this->getEntityName());
         $rootNameOne = $this->getRootClassName("Boutique\\App\\Entity\\" . $classOne);
@@ -216,7 +219,11 @@ abstract class Model
         $foreignKey = $rootNameOne . "_id";
         $tableOneName = $rootNameOne . "s";
 
-        $sql = "SELECT * FROM {$tableOneName} WHERE id = :id";
+        if($tableOne !=null && $idInOne != null && is_string($tableOne) && is_string($idInOne)) {
+            $sql = "SELECT * FROM {$tableOneName} WHERE {$idInOne} = :id";
+        }else{
+            $sql = "SELECT * FROM {$tableOneName} WHERE id = :id";
+        }
 
         $entity = $this->query($sql, $entityNameOne, ["id" => $this->entity->{$foreignKey}], true);
 
@@ -265,8 +272,7 @@ abstract class Model
     //BelongsToMany
     // transaction
 
-
-    public function makeTransaction(callable $transactions)
+    public function transaction(callable $transactions)
     {
         try {
             $this->database->beginTransaction();

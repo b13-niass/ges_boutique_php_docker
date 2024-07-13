@@ -92,4 +92,5 @@ final class MysqlDatabase
     {
         return $this->pdo->lastInsertId();
     }
+
 }

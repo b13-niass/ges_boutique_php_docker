@@ -15,4 +15,5 @@ class ArticleModel extends Model
     {
         $this->belongsToMany('DetailDetteEntity', 'DetteEntity');
     }
+
 }

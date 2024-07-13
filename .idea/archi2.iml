@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" packagePrefix="Boutique\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/app" isTestSource="false" packagePrefix="Boutique\App\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/app/controller" isTestSource="false" packagePrefix="Boutique\App\Controller\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/app/controller/errors" isTestSource="false" packagePrefix="Boutique\App\Controller\Error\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/app/entity" isTestSource="false" packagePrefix="Boutique\App\Entity\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/app/model" isTestSource="false" packagePrefix="Boutique\App\Model\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core" isTestSource="false" packagePrefix="Boutique\Core\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/database" isTestSource="false" packagePrefix="Boutique\Core\Database\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/entity" isTestSource="false" packagePrefix="Boutique\Core\Entity\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/impl" isTestSource="false" packagePrefix="Boutique\Core\Impl\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/model" isTestSource="false" packagePrefix="Boutique\Core\Model\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/security" isTestSource="false" packagePrefix="Boutique\Core\Security\" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/composer" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/graham-campbell/result-type" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/phpoption/phpoption" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-ctype" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-mbstring" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-php80" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/vlucas/phpdotenv" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

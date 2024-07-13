@@ -128,10 +128,10 @@
 
 <?php
 
-use Boutique\Core\Session;
+//use Boutique\Core\Session;
 
-Session::unset('errorSearchRef');
-Session::unset('errorAdd');
+\Boutique\App\App::getSession()->unset('errorSearchRef');
+\Boutique\App\App::getSession()->unset('errorAdd');
 // Session::unset('panier');
 // Session::unset('current_article');
 ?>

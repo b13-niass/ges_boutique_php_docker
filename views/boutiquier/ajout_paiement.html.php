@@ -83,5 +83,5 @@
 
 use Boutique\Core\Session;
 
-Session::unset('errorPaiement');
+\Boutique\App\App::getSession()->unset('errorPaiement');
 ?>

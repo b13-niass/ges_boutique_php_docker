@@ -2,8 +2,9 @@
 
 namespace Boutique\App;
 
+use Boutique\Core\Authorize;
 use Boutique\Core\Database\MysqlDatabase;
-use Boutique\Core\Files;
+use Boutique\Core\FIles;
 use Boutique\Core\Security\SecurityDatabase;
 use Boutique\Core\Session;
 use Boutique\Core\Validator;
@@ -14,9 +15,10 @@ class App
     private static ?App $instance = null;
     private static ?MysqlDatabase $database = null;
     private static ?SecurityDatabase $securityDatabase = null;
-    protected ?Session $session = null;
-    protected ?Validator $validator = null;
-    protected ?Files $fileUploadSystem = null;
+    private static ?Session $session = null;
+    private static ?Validator $validator = null;
+    private static ?FIles $fileUploadSystem = null;
+    public static ?Authorize $authorize = null;
 
     public static function getInstance()
     {
@@ -45,9 +47,29 @@ class App
     public static function getFileUploadSystem()
     {
         if (self::$fileUploadSystem == null) {
-            self::$fileUploadSystem = new Files();
+            self::$fileUploadSystem = new FIles();
         }
         return self::$fileUploadSystem;
+    }
+
+    public static function getSession(){
+        if(self::$session == null){
+            self::$session = new Session();
+        }
+        return self::$session;
+    }
+
+    public static function getValidator(){
+        if(self::$validator == null){
+            self::$validator = new Validator();
+        }
+        return self::$validator;
+    }
+    public static function getAuthorize(){
+        if(self::$authorize == null){
+            self::$authorize = new Authorize();
+        }
+        return self::$authorize;
     }
 
     public function getModel(string $modelName)

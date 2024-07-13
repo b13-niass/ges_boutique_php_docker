@@ -13,7 +13,8 @@
       "Boutique\\Core\\Database\\": "src/core/database/",
       "Boutique\\Core\\Entity\\": "src/core/entity/",
       "Boutique\\Core\\Model\\": "src/core/model/",
-      "Boutique\\Core\\Security\\": "src/core/security/"
+      "Boutique\\Core\\Security\\": "src/core/security/",
+      "Boutique\\Core\\Impl\\": "src/core/impl/"
     }
   },
   "authors": [
