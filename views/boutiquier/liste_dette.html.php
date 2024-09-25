@@ -47,6 +47,8 @@
                                         Paiement</th>
                                     <th scope="col" class="bg-[#f8f9fb] dark:bg-box-dark-up px-4 py-3.5 text-end text-body dark:text-title-dark text-[15px] font-medium border-none before:hidden rounded-e-[6px] capitalize">
                                         List</th>
+                                    <th scope="col" class="bg-[#f8f9fb] dark:bg-box-dark-up px-4 py-3.5 text-end text-body dark:text-title-dark text-[15px] font-medium border-none before:hidden rounded-e-[6px] capitalize">
+                                        Articles</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -56,7 +58,7 @@
                                 ?>
                                         <tr class="group">
                                             <td class="px-4 py-2.5 font-normal last:text-end capitalize text-[14px] text-dark dark:text-title-dark border-none group-hover:bg-transparent  whitespace-nowrap">
-                                                <?= $dette->date ?>
+                                                <?= (new DateTime($dette->date))->format('d-m-Y') ?>
                                             </td>
                                             <td class="px-4 py-2.5 font-normal last:text-end lowercase text-[14px] text-dark dark:text-title-dark border-none group-hover:bg-transparent  whitespace-nowrap">
                                                 <?= $dette->total_dette ?></td>
@@ -80,6 +82,13 @@
                                                 </form>
                                                 <span class="<?= (int)$dette->montant_verse == 0 ? '' : 'hidden' ?> bg-danger rounded-[15px] py-[4px] px-[8.23px] text-[12px] font-medium leading-[13px] text-center text-white">Pas de paiement</span>
                                             </td>
+
+                                            <td class="px-4 py-2.5 font-normal last:text-end capitalize text-[14px] text-dark dark:text-title-dark border-none group-hover:bg-transparent  whitespace-nowrap">
+
+                                                <a href="/dettes/paiement/<?=$dette->id?>/articles" class="px-[30px] h-[44px] text-white bg-primary border-primary hover:bg-primary-hbr font-medium rounded-4 text-sm w-full sm:w-auto text-center inline-flex items-center justify-center capitalize transition-all duration-300 ease-linear">
+                                                    Articles
+                                                </a>
+                                            </td>
                                         </tr>
 
                                 <?php
@@ -88,31 +97,7 @@
                                 ?>
                             </tbody>
                         </table>
-                        <div class="flex items-center md:justify-end pt-[40px]">
-                            <nav aria-label="Page navigation example">
-                                <ul class="flex items-center justify-center gap-2 list-style-none listItemActive">
-                                    <li>
-                                        <a class="relative flex justify-center items-center rounded bg-transparent h-[30px] w-[30px]  text-light transition-all duration-300 dark:text-white dark:hover:bg-box-dark-up dark:hover:text-white  border border-regular dark:border-box-dark-up  text-[13px] font-normal capitalize text-[rgb(64_64_64_/_var(--tw-text-opacity))] duration ease-in-out border-solid hover:bg-primary hover:text-white" href="#" aria-label="Previous">
-                                            <i class="uil uil-angle-left text-[16px]"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="relative flex justify-center items-center border border-regular dark:border-box-dark-up rounded bg-white text-dark h-[30px] w-[30px] text-sm transition-all duration-300 hover:bg-primary hover:text-white dark:text-white dark:bg-box-dark-up dark:hover:text-white [&.active]:bg-primary [&.active]:text-white active" href="#">1</a>
-                                    </li>
-                                    <li aria-current="page">
-                                        <a class="relative flex justify-center items-center border border-regular dark:border-box-dark-up rounded bg-white text-dark h-[30px] w-[30px] text-sm transition-all duration-300 hover:bg-primary hover:text-white dark:text-white dark:bg-box-dark-up dark:hover:text-white [&.active]:bg-primary [&.active]:text-white" href="#">2</a>
-                                    </li>
-                                    <li>
-                                        <a class="relative flex justify-center items-center border border-regular dark:border-box-dark-up rounded  bg-white text-dark h-[30px] w-[30px] text-sm transition-all duration-300 hover:bg-primary hover:text-white dark:text-white dark:bg-box-dark-up dark:hover:text-white [&.active]:bg-primary [&.active]:text-white" href="#">3</a>
-                                    </li>
-                                    <li>
-                                        <a class="relative flex justify-center items-center rounded bg-transparent h-[30px] w-[30px]  text-light transition-all duration-300 dark:text-white dark:hover:bg-box-dark-up dark:hover:text-white  border border-regular dark:border-box-dark-up text-[13px] font-normal capitalize text-[rgb(64_64_64_/_var(--tw-text-opacity))] duration ease-in-out border-solid hover:bg-primary hover:text-white cursor-pointer" href="#" aria-label="Next">
-                                            <i class="uil uil-angle-right text-[16px]"></i>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
+                        <?= $paginationHtml ?>
                     </div>
 
                 </div>

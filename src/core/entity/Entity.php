@@ -29,6 +29,16 @@ abstract class Entity implements IEntity
         }
     }
 
+//    public function __unset($name){
+//        $reflectionClass = new \ReflectionClass($this);
+//        if ($reflectionClass->hasProperty($name)) {
+//            $reflectionProperty = $reflectionClass->getProperty($name);
+//            $reflectionProperty->setAccessible(true);
+//            $reflectionProperty->setValue($this, null);
+//            return $this;
+//        }
+//    }
+
     // public function toArray(){
     //     $reflectionClass = new \ReflectionClass($this);
     //     $properties = $reflectionClass->getProperties();

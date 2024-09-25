@@ -4,6 +4,7 @@ namespace Boutique\Core;
 
 use Boutique\Core\Impl\IAuthorize;
 use Boutique\Core\Impl\IFile;
+use Boutique\Core\Impl\IPaginator;
 use Boutique\Core\Impl\ISession;
 use Boutique\Core\Impl\IValidator;
 
@@ -13,17 +14,19 @@ class Controller
     protected ?IValidator $validator = null;
     protected ?IAuthorize $authorize = null;
     protected ?IFile $file = null;
+    protected ?IPaginator $paginator = null;
     protected $layout = "layout_default";
 
 
     public function __construct(IValidator $validator, ISession $session,
                                 IFile $file,
-                                IAuthorize $authorize)
+                                IAuthorize $authorize, IPaginator $paginator)
     {
         $this->session = $session;
         $this->validator = $validator;
         $this->file = $file;
         $this->authorize = $authorize;
+        $this->paginator = $paginator;
     }
 
     public function renderView($view, $data = [])

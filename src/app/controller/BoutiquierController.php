@@ -6,6 +6,7 @@ use Boutique\App\App;
 use Boutique\Core\Controller;
 use Boutique\Core\Impl\IAuthorize;
 use Boutique\Core\Impl\IFile;
+use Boutique\Core\Impl\IPaginator;
 use Boutique\Core\Impl\ISession;
 use Boutique\Core\Impl\IValidator;
 use Boutique\Core\Session;
@@ -21,9 +22,9 @@ class BoutiquierController extends Controller
     private $detailDetteModel;
     private $paiementModel;
 
-    public function __construct(IValidator $validator, ISession $session, IFile $file, IAuthorize $authorize)
+    public function __construct(IValidator $validator, ISession $session, IFile $file, IAuthorize $authorize, IPaginator $paginator)
     {
-        parent::__construct($validator, $session, $file, $authorize);
+        parent::__construct($validator, $session, $file, $authorize,$paginator);
 
         $this->clientModel = App::getInstance()->getModel('Client');
         $this->detteModel = App::getInstance()->getModel('Dette');
@@ -35,6 +36,11 @@ class BoutiquierController extends Controller
     {
         $data = [];
         $data['montant_verse'] = 0;
+        if ($this->session->issetE("userConnected")){
+            $data['userConnected'] = $this->session->restoreObjectFromSession('Utilisateur', 'userConnected');
+//            dd($data['userConnected']);
+        }
+
         if ($this->session->issetE('found_client')) {
             $data['clientFound'] = $this->session->restoreObjectFromSession('Client', 'found_client');
             // dd($this->toJSON($data['clientFound']));
@@ -82,6 +88,7 @@ class BoutiquierController extends Controller
 
             if ($this->session->issetE('panier')) {
                 $data['panier'] = $this->session->restoreObjectsFromSessionArray('Article', 'panier');
+//                dd($data['panier']);
                 foreach ($data['panier'] as $dp) {
                     $data['montant_total'] += $dp->prix * $dp->qte;
                 }
@@ -100,17 +107,19 @@ class BoutiquierController extends Controller
             $this->redirect('/dettes');
         }
     }
+
     public function listeDetteIndex()
     {
         $data = [];
         $data['listesDettesDuClient'] = [];
         if ($this->session->issetE('found_client')) {
             $data['clientFound'] = $this->session->restoreObjectFromSession('Client', 'found_client');
-            // dd($this->clientModel->getEntity());
             $this->clientModel->getEntity()->id = (int) $data['clientFound']->id;
-            // dd($this->clientModel->getDettesNonSolder());
-            $data['listesDettesDuClient'] = $this->clientModel->getDettesNonSolder();
-            // dd($data['listesDettesDuClient']);
+            $listesDettesDuClient = $this->clientModel->getDettesNonSolder();
+            $this->paginator->initialize($listesDettesDuClient,3, 1);
+            $data['listesDettesDuClient'] = $this->paginator->getItems();
+            $data['paginationHtml'] = $this->paginator->render("/dettes/liste/page/");
+            $this->session->set('etat_dettes', 'NON SOLDER');
             $data['etat'] = ['NON SOLDER', 'SOLDER'];
             $this->renderView('/boutiquier/liste_dette', $data);
         } else {
@@ -126,9 +135,17 @@ class BoutiquierController extends Controller
             $this->clientModel->getEntity()->id = (int) $data['clientFound']->id;
             // dd($_POST['etat']);
             if (isset($_POST['etat']) &&  $_POST['etat'] == "NON SOLDER") {
-                $data['listesDettesDuClient'] = $this->clientModel->getDettesNonSolder();
+                $listesDettesDuClient = $this->clientModel->getDettesNonSolder();
+                $this->paginator->initialize($listesDettesDuClient,3, 1);
+                $data['listesDettesDuClient'] = $this->paginator->getItems();
+                $this->session->set('etat_dettes', 'NON SOLDER');
+                $data['paginationHtml'] = $this->paginator->render("/dettes/liste/page/");
             } else {
-                $data['listesDettesDuClient'] = $this->clientModel->getDettesSolder();
+                $listesDettesDuClient = $this->clientModel->getDettesSolder();
+                $this->paginator->initialize($listesDettesDuClient,3, 1);
+                $data['listesDettesDuClient'] = $this->paginator->getItems();
+                $this->session->set('etat_dettes', 'SOLDER');
+                $data['paginationHtml'] = $this->paginator->render("/dettes/liste/page/");
             }
             $data['selectedEtat'] =  $_POST['etat'];
             $data['etat'] = ['NON SOLDER', 'SOLDER'];
@@ -137,6 +154,33 @@ class BoutiquierController extends Controller
             $this->redirect('/dettes');
         }
     }
+
+    public function listeDetteIndexPage($page){
+        $data = [];
+        $data['listesDettesDuClient'] = [];
+        if ($this->session->issetE('found_client')) {
+            $data['clientFound'] = $this->session->restoreObjectFromSession('Client', 'found_client');
+            $this->clientModel->getEntity()->id = (int) $data['clientFound']->id;
+            // dd($_POST['etat']);
+            if ($this->session->issetE('etat_dettes') &&  $this->session->get('etat_dettes') == "NON SOLDER") {
+                $listesDettesDuClient = $this->clientModel->getDettesNonSolder();
+                $this->paginator->initialize($listesDettesDuClient,3, $page);
+                $data['listesDettesDuClient'] = $this->paginator->getItems();
+                $data['paginationHtml'] = $this->paginator->render("/dettes/liste/page/");
+            } else {
+                $listesDettesDuClient = $this->clientModel->getDettesSolder();
+                $this->paginator->initialize($listesDettesDuClient,3, $page);
+                $data['listesDettesDuClient'] = $this->paginator->getItems();
+                $data['paginationHtml'] = $this->paginator->render("/dettes/liste/page/");
+            }
+            $data['selectedEtat'] =  $this->session->get('etat_dettes');
+            $data['etat'] = ['NON SOLDER', 'SOLDER'];
+            $this->renderView('/boutiquier/liste_dette', $data);
+        } else {
+            $this->redirect('/dettes');
+        }
+    }
+
     public function addClient()
     {
         $_POST['password'] = $this->hasherPassword("passer@1");
@@ -217,7 +261,7 @@ class BoutiquierController extends Controller
             if ($this->session->issetE('current_article')) {
                 $client = $this->session->restoreObjectFromSession('Client', 'found_client');
                 $article = $this->session->restoreObjectFromSession('Article', 'current_article');
-
+                $article_origine = clone $article;
 
                 $errors = $this->validator->validate($_POST, [
                     'quantite' => ['required', 'number']
@@ -225,11 +269,30 @@ class BoutiquierController extends Controller
                 if (count($errors) > 0) {
                     $this->session->set('errorAdd', $errors);
                 } else {
+                    $cpt = 0;
                     if ($article->qte >= (int) $_POST['quantite']) {
 
-                        $article->qte = (int) $_POST['quantite'];
-
-                        $this->session->saveObjectToSessionArray($article, 'panier');
+                        if ($this->session->issetE('panier')) {
+                            $data['panier'] = $this->session->restoreObjectsFromSessionArray('Article', 'panier');
+                            foreach ($data['panier'] as $key => $dp) {
+                                if ($article_origine->libelle == $dp->libelle){
+                                    $cpt++;
+                                    $data['panier'][$key]->qte += (int) $_POST['quantite'];
+                                    if($data['panier'][$key]->qte > $article_origine->qte){
+                                        $errors['quantite'] = 'Quantité insufisante';
+                                        $this->session->set('errorAdd', $errors);
+                                    }else{
+                                        $this->session->unset('panier');
+                                        $this->session->saveObjectsToSessionArray($data['panier'], 'panier');
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                        if($cpt == 0){
+                            $article->qte = (int) $_POST['quantite'];
+                            $this->session->saveObjectToSessionArray($article, 'panier');
+                        }
                     } else {
                         $errors['quantite'] = 'Quantité insufisante';
                         $this->session->set('errorAdd', $errors);
@@ -249,6 +312,7 @@ class BoutiquierController extends Controller
     {
         $client = $this->session->restoreObjectFromSession('Client', 'found_client');
         $articles = $this->session->restoreObjectsFromSessionArray('Article', 'panier');
+        $this->detteModel->setTable();
         $resultsaveDette = $this->detteModel->save([
             'client_id' => $client->id,
             'utilisateur_id' => 1,
@@ -257,13 +321,23 @@ class BoutiquierController extends Controller
         ]);
 
         foreach ($articles as $article) {
+            $this->detailDetteModel->setTable();
             $this->detailDetteModel->save([
                 'article_id' => $article->id,
                 'dette_id' => $resultsaveDette,
                 'prix' => $article->prix,
                 'qte' => $article->qte,
             ]);
+
+            $article_to_update = $this->articleModel->find(["id" => $article->id]);
+            $article_to_update->qte -= $article->qte;
+            $this->articleModel->setTable();
+            $result = $this->articleModel::update([
+                "qte" => $article_to_update->qte,
+                "id" => $article_to_update->id
+            ]);
         }
+
         $this->session->unset('panier');
         $this->session->unset('current_article');
 
@@ -384,6 +458,27 @@ class BoutiquierController extends Controller
                 // $data['listePaiement'] = $this->paiementModel->getDettePaiement((int) $_POST['dette_id']);
             }
             $this->renderView('/boutiquier/liste_paiement', $data);
+        }
+    }
+
+    public function paiementArticles($id){
+        $data = [];
+        $dette_id = (int) trim($id);
+        $data['listesDettesDuClient'] = [];
+        if ($this->session->issetE('found_client')) {
+            $data['clientFound'] = $this->session->restoreObjectFromSession('Client', 'found_client');
+            if (isset($dette_id) && !empty($dette_id)) {
+                $data['laDette'] = $this->detteModel->find(['id' => $dette_id]);
+
+                $this->clientModel->getEntity()->id = $data['clientFound']->id;
+                $data['laDette']->total_dette = $this->clientModel->getMontantTotalDette($data['laDette']->id);
+                $data['laDette']->montant_verse = $this->clientModel->getMontantVerserDette($data['laDette']->id);
+                $this->detteModel->getEntity()->id = $data['laDette']->id;
+
+                $data['listeArticles'] = $this->detteModel->getArticles($dette_id);
+
+                $this->renderView('/boutiquier/liste_article', $data);
+            }
         }
     }
 

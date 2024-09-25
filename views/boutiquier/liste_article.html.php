@@ -6,7 +6,7 @@
             <div class="bg-white dark:bg-box-dark m-0 p-0 text-body dark:text-subtitle-dark text-[15px] rounded-10 relative">
                 <div class="px-[25px] text-dark dark:text-title-dark font-medium text-[17px] flex flex-wrap items-center justify-between max-sm:flex-col max-sm:h-auto border-b border-regular dark:border-box-dark-up">
                     <h1 class="mb-0 inline-flex items-center py-[16px] overflow-hidden whitespace-nowrap text-ellipsis text-[18px] font-semibold text-dark dark:text-title-dark capitalize">
-                        Liste Paiement
+                        Liste Dettes
                     </h1>
                     <div class="w-[80%] flex gap-[10px] justify-between flex-row items-center">
                         <div class="flex flex-col md:flex-row gap-[8px]">
@@ -28,23 +28,27 @@
                             <thead class="font-medium">
                                 <tr>
                                     <th scope="col" class="bg-[#f8f9fb] dark:bg-box-dark-up px-4 py-3.5 text-start text-body dark:text-title-dark text-[15px] font-medium border-none before:hidden capitalize">
-                                        Date</th>
+                                        Libelle</th>
                                     <th scope="col" class="bg-[#f8f9fb] dark:bg-box-dark-up px-4 py-3.5 text-start text-body dark:text-title-dark text-[15px] font-medium border-none before:hidden capitalize">
-                                        Montant</th>
+                                        Quantité</th>
+                                    <th scope="col" class="bg-[#f8f9fb] dark:bg-box-dark-up px-4 py-3.5 text-start text-body dark:text-title-dark text-[15px] font-medium border-none before:hidden capitalize">
+                                        Prix</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
                                 // dd($listePaiement);
-                                if (isset($listePaiement) && !empty($listePaiement)) {
-                                    foreach ($listePaiement as $p) {
+                                if (isset($listeArticles) && !empty($listeArticles)) {
+                                    foreach ($listeArticles as $a) {
                                 ?>
                                         <tr class="group border-b border-neutral-200 dark:border-neutral-500 transition ease-in-out duration-300 motion-reduce:transition-none">
                                             <td class="px-4 py-2.5 font-normal last:text-end capitalize text-[14px] text-dark dark:text-title-dark border-none group-hover:bg-transparent  whitespace-nowrap">
-                                                <?= (new DateTime($p->date))->format('d-m-Y')?>
+                                                <?= $a->libelle ?>
                                             </td>
                                             <td class="px-4 py-2.5 font-normal last:text-end lowercase text-[14px] text-dark dark:text-title-dark border-none group-hover:bg-transparent  whitespace-nowrap">
-                                                <?= $p->montant ?></td>
+                                                <?= $a->qte ?></td>
+                                            <td class="px-4 py-2.5 font-normal last:text-end lowercase text-[14px] text-dark dark:text-title-dark border-none group-hover:bg-transparent  whitespace-nowrap">
+                                                <?= $a->prix ?></td>
                                         </tr>
 
                                 <?php

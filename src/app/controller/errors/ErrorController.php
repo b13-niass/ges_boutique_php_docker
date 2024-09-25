@@ -4,10 +4,21 @@ namespace Boutique\App\Controller\Error;
 
 // use Boutique\App\App;
 use Boutique\Core\Controller;
+use Boutique\Core\Impl\IAuthorize;
+use Boutique\Core\Impl\IFile;
+use Boutique\Core\Impl\IPaginator;
+use Boutique\Core\Impl\ISession;
+use Boutique\Core\Impl\IValidator;
 
 class ErrorController extends Controller
 {
-    // public function notFound()
+    private static ?IPaginator $paginatorStatic = null;
+
+    public function __construct(IValidator $validator, ISession $session, IFile $file, IAuthorize $authorize, IPaginator $paginator)
+    {
+        parent::__construct($validator, $session, $file, $authorize, $paginator);
+    }
+        // public function notFound()
     // {
     //     header("HTTP/1.0 404 Not Found");
     //     require_once $_ENV['VIEW_DIR'] . '/erreur404.html.php';
@@ -17,16 +28,14 @@ class ErrorController extends Controller
     // {
     // }
 
-    public static function loadView(HttpCode $code)
+    public function loadView(HttpCode $code)
     {
 
-        $instance = new self();
-
-        $instance->layout = "error_layout";
+        $this->layout = "error_layout";
 
         match ($code) {
-            HttpCode::Code404 => $instance->renderView('/errors/erreur404'),
-            HttpCode::Code403 => $instance->renderView('/errors/erreur403')
+            HttpCode::Code404 => $this->renderView('/errors/erreur404'),
+            HttpCode::Code403 => $this->renderView('/errors/erreur403')
         };
     }
 }

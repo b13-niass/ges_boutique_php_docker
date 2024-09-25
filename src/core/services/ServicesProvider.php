@@ -13,6 +13,7 @@ class ServicesProvider implements IServicesProvider
 {
     public function register(Container $container, array $services)
     {
+//        dd($services);
         foreach ($services as $serviceName => $serviceClass) {
             try {
                 $container->set($serviceName, function () use ($serviceClass, $serviceName){
@@ -36,4 +37,5 @@ class ServicesProvider implements IServicesProvider
             }
         }
     }
+
 }

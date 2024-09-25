@@ -3,12 +3,14 @@ namespace Boutique\App;
 
 use Boutique\Core\Container;
 use Boutique\Core\Impl\IDatabase;
+use Boutique\Core\Security\SecurityDatabase;
 use Boutique\Core\Service\ServicesProvider;
 
 class App
 {
     private static ?App $instance = null;
     private ?Container $container = null;
+    private static ?SecurityDatabase $securityDatabase = null;
 
     private function __construct()
     {
@@ -28,6 +30,14 @@ class App
             $this->container = new Container();
         }
         return $this->container;
+    }
+
+    public static function getSecurityDB(): SecurityDatabase
+    {
+        if (self::$securityDatabase === null) {
+            self::$securityDatabase = new SecurityDatabase(self::getInstance()->getContainer()->get(IDatabase::class));
+        }
+        return self::$securityDatabase;
     }
 
     public function getModel(string $modelName)

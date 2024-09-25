@@ -91,10 +91,10 @@
                     </div>
                 </div>
                 <?php
-//                $session->unset('success');
-//                $session->unset('error');
-//                $session->unset('errorForm');
-//                $session->unset('validValues');
+                $session->unset('success');
+                $session->unset('error');
+                $session->unset('errorForm');
+                $session->unset('validValues');
                 ?>
             </div>
         </div>

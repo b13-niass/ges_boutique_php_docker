@@ -141,4 +141,25 @@ class Session implements ISession
 
         return $objects;
     }
+
+    public function saveObjectsToSessionArray(array $objects, $sessionKey)
+    {
+        $sessionDataArray = [];
+
+        foreach ($objects as $object) {
+            $reflectionClass = new \ReflectionClass($object);
+            $properties = $reflectionClass->getProperties();
+            $objectData = [];
+
+            foreach ($properties as $property) {
+                $property->setAccessible(true);
+                $objectData[$property->getName()] = $property->getValue($object);
+            }
+
+            $sessionDataArray[] = $objectData;
+        }
+
+        $_SESSION[$sessionKey] = $sessionDataArray;
+    }
+
 }

@@ -14,7 +14,8 @@ class Validator implements IValidator
         'email' => 'isEmail',
         'phone' => 'isPhone',
         'number' => 'isNumeric',
-        'uniqueclient' => 'isUnique'
+        'uniqueclient' => 'isUnique',
+        'minLength:6' => 'minLength6',
     ];
 
     public function validate($data, $rules)
@@ -43,6 +44,9 @@ class Validator implements IValidator
                         }
                         if ($rule == 'smallerThanRestant') {
                             $this->errors[$field] = "Le {$field} doit être < au montant restant.";
+                        }
+                        if ($rule == 'minLength:6') {
+                            $this->errors[$field] = "Le {$field} doit être >= 6 caractères.";
                         }
                         break;
                     }
@@ -83,4 +87,7 @@ class Validator implements IValidator
         return !$client->find(["{$field}" => $value]);
     }
 
+    public function minLength6($value){
+        return strlen($value) >= 6;
+    }
 }

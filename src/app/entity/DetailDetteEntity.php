@@ -11,4 +11,5 @@ class DetailDetteEntity extends Entity
     private int $article_id;
     private float $prix;
     private int $qte;
+    private string $libelle;
 }

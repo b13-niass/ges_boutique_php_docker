@@ -11,15 +11,19 @@ class Routes implements IRoute
 {
     private $getRoutes = [];
     private $postRoutes = [];
+    private static $middlewares = [];
+
 
     public function addGetRoute($route, $target)
     {
         $this->getRoutes[$route] = $target;
+        return $this;
     }
 
     public function addPostRoute($route, $target)
     {
         $this->postRoutes[$route] = $target;
+        return $this;
     }
 
     public function getGetRoutes()
@@ -32,13 +36,32 @@ class Routes implements IRoute
         return $this->postRoutes;
     }
 
+    public function middleware($middleware)
+    {
+        $lastRoute = end($this->getRoutes) ? key($this->getRoutes) : key($this->postRoutes);
+        self::$middlewares[$lastRoute] = $middleware;
+        return $this;
+    }
+
+
     public function dispatch($uri, $method)
     {
         $routes = $method === 'POST' ? $this->postRoutes : $this->getRoutes;
+//        dd(self::$middlewares);
         foreach ($routes as $route => $target) {
             $pattern = preg_replace('/\{[a-zA-Z]+\}/', '([a-zA-Z0-9_]+)', $route);
             if (preg_match("#^$pattern$#", $uri, $matches)) {
                 array_shift($matches);
+//                    dd(self::$middlewares);
+                if (isset(self::$middlewares[$route])) {
+                    $middleware = self::$middlewares[$route];
+                    $middlewareInstance = App::getInstance()->getContainer()->get($middleware);
+                    if (!$middlewareInstance->handle()) {
+                        $errorController = App::getInstance()->getContainer()->get(ErrorController::class);
+                        $errorController->loadView(HttpCode::Code403);
+                        exit();
+                    }
+                }
 
                 if (is_callable($target)) {
                     return call_user_func_array($target, $matches);
@@ -51,13 +74,8 @@ class Routes implements IRoute
                         $reflectionClass = new \ReflectionClass($controllerName);
 
                         if ($reflectionClass->isInstantiable()) {
+
                             $controller = App::getInstance()->getContainer()->get($controllerName);
-//                            $controller = $reflectionClass->newInstance(
-//                                App::getValidator(),
-//                                App::getSession(),
-//                                App::getFileUploadSystem(),
-//                                App::getAuthorize()
-//                            );
 
                             if ($reflectionClass->hasMethod($actionName)) {
                                 $reflectionMethod = $reflectionClass->getMethod($actionName);
@@ -81,8 +99,8 @@ class Routes implements IRoute
                 throw new \Exception("Invalid route target for route {$route}");
             }
         }
-
-        ErrorController::loadView(HttpCode::Code404);
+        $errorController = App::getInstance()->getContainer()->get(ErrorController::class);
+        $errorController->loadView(HttpCode::Code404);
         exit();
     }
 }

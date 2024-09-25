@@ -102,4 +102,16 @@ class DetteModel extends Model
         }
         return $paiements;
     }
+
+    public function getArticles($dette_id)
+    {
+        $articles = [];
+        foreach ($this->articles as $article) {
+//            dd($this->articles);
+            if ($article->getEntity()->dette_id == $dette_id) {
+                $articles[] = $article->getEntity();
+            }
+        }
+        return $articles;
+    }
 }

@@ -14,6 +14,9 @@ services:
   Boutique\Core\Impl\ISession:
     class: Boutique\Core\Session
 
+  Boutique\Core\Impl\IPaginator:
+    class: Boutique\Core\Paginator
+
   Boutique\Core\Impl\IValidator:
     class: Boutique\Core\Validator
 
@@ -22,6 +25,10 @@ services:
 
   Boutique\Core\Impl\IAuthorize:
     class: Boutique\Core\Authorize
+
+  auth:
+    class: Boutique\Core\AuthMiddleware
+
 parameters:
   DB_HOST: localhost
   DB_NAME: maboutique2

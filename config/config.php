@@ -20,6 +20,7 @@ define('assetsPath', $_ENV['ASSETS_PATH']);
 
 /** Quelque fonction utilitaire **/
 
+
 function dd($data)
 {
     echo "<pre >";
@@ -59,8 +60,16 @@ $config = Yaml::parseFile("../config/config.yml");
 $services = extractServiceClasses($config);
 
 $provider = new ServicesProvider();
+
+//$numbers = [1, 2, 3, 4, 5];
+//
+//$squares = array_map(fn($number) => $number * $number, $numbers);
+//
+//print_r($squares);
+
 $provider->register(App::getInstance()->getContainer(), $services);
 
 //define('SERVICE_YAML', $services);
 
 //dd($services);
+

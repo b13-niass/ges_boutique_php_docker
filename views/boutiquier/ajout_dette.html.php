@@ -130,7 +130,7 @@
 
 //use Boutique\Core\Session;
 
-//\Boutique\App\App::getSession()->unset('errorSearchRef');
-//\Boutique\App\App::getSession()->unset('errorAdd');
+$session->unset('errorSearchRef');
+$session->unset('errorAdd');
 
 ?>

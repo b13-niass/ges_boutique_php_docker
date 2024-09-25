@@ -13,6 +13,7 @@ class Container
 
     public function get(string $name): object
     {
+//        dd($this->instances);
         if (isset($this->instances[$name])) {
             return $this->instances[$name];
         }

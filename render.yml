@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: boutique-arch-monolitique
+    env: php
+    region: Dakar
+    plan: free
+    buildCommand: "composer install"
+    startCommand: "php -S 0.0.0.0:10000 -t public"
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: DATABASE_URL
+        value: "mysql://if0_36906623:DQNmXayHCkGI@sql200.infinityfree.com:3306/if0_36906623_maboutique2"
